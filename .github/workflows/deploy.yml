@@ -1,0 +1,29 @@
+name: Build Docker Images
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir imagen Backend
+        run: |
+          docker build -t backend-despachos:ci ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+
+      - name: Construir imagen Frontend
+        run: |
+          docker build -t frontend-despacho:ci ./front_despacho
+
+      - name: Validar Docker Compose
+        run: |
+          docker compose config
