@@ -36,14 +36,27 @@ jobs:
           push: true
           tags: cristiancaceres/frontend-despacho:latest
 
-      - name: Desplegar en EC2 por SSH
+            - name: Desplegar en EC2 por SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 60s
+          command_timeout: 30m
           script: |
             cd ~/proyecto-semestral-devops
-            sudo docker compose -f docker-compose.prod.yml pull
+
+            if [ ! -f /swapfile ]; then
+              sudo fallocate -l 2G /swapfile
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+            fi
+
+            sudo docker pull cristiancaceres/backend-despachos:latest
+            sudo docker pull cristiancaceres/frontend-despacho:latest
+
             sudo docker compose -f docker-compose.prod.yml up -d
+
             sudo docker container ls --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
