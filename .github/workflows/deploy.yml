@@ -36,7 +36,7 @@ jobs:
           push: true
           tags: cristiancaceres/frontend-despacho:latest
 
-            - name: Desplegar en EC2 por SSH
+      - name: Desplegar en EC2 por SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
