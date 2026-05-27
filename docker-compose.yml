@@ -8,8 +8,6 @@ services:
       MYSQL_DATABASE: despachos_db
       MYSQL_USER: appuser
       MYSQL_PASSWORD: 1234
-    ports:
-      - "3307:3306"
     volumes:
       - mysql_despachos_data:/var/lib/mysql
     networks:
@@ -21,9 +19,7 @@ services:
       retries: 5
 
   backend-despachos:
-    build:
-      context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
-      dockerfile: Dockerfile
+    image: cristiancaceres/backend-despachos:latest
     container_name: backend-despachos
     restart: unless-stopped
     depends_on:
@@ -41,15 +37,13 @@ services:
       - red-despachos
 
   frontend-despacho:
-    build:
-      context: ./front_despacho
-      dockerfile: Dockerfile
+    image: cristiancaceres/frontend-despacho:latest
     container_name: frontend-despacho
     restart: unless-stopped
     depends_on:
       - backend-despachos
     ports:
-      - "8080:80"
+      - "80:80"
     networks:
       - red-despachos
 
@@ -58,4 +52,4 @@ volumes:
 
 networks:
   red-despachos:
-    driver: bridgeS
+    driver: bridge
